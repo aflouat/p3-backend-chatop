@@ -10,7 +10,6 @@ import fr.tmsconsult.p3_backend_chatop.security.model.LoginRequest;
 import fr.tmsconsult.p3_backend_chatop.security.model.RegisterRequest;
 import fr.tmsconsult.p3_backend_chatop.security.service.JWTService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -92,12 +91,7 @@ public class AuthController {
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
         logger.info(" request header auth: {}", token);
         try {
-            // Extraire le JWT du header
-            String jwt = token.replace("Bearer ", "");
-
-            // Valider et parser le JWT pour obtenir les claims
-       Claims claims = jwtService.getClaimsFromToken(jwt);
-            String email = claims.get("email", String.class);
+            String email = jwtService.findEmailByToken(token);
 
             User uRetrieved = userService.findUserByEmail(email);
             CurrentUserDTO currentUserDTO = new CurrentUserDTO(uRetrieved.getId(),uRetrieved.getName(),uRetrieved.getEmail(),

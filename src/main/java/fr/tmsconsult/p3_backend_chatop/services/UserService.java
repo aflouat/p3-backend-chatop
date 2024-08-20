@@ -1,11 +1,9 @@
 package fr.tmsconsult.p3_backend_chatop.services;
 
 import fr.tmsconsult.p3_backend_chatop.entities.User;
-import fr.tmsconsult.p3_backend_chatop.models.DeterministicDateProvider;
 import fr.tmsconsult.p3_backend_chatop.repositories.UserRepository;
 import fr.tmsconsult.p3_backend_chatop.security.model.Token;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 
-import javax.crypto.SecretKey;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -76,4 +72,8 @@ public class UserService {
         User user = userRepository.findByEmail(email);
         return user;
     }
+
+
+
+
 }

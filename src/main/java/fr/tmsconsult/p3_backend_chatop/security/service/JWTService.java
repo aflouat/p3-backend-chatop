@@ -17,7 +17,7 @@ public class JWTService {
 
 
     // Méthode pour valider et extraire les claims du JWT
-    public Claims getClaimsFromToken(String tokenStr) {
+    public  Claims getClaimsFromToken(String tokenStr) {
 
         try {
             return Jwts.parser()
@@ -30,5 +30,15 @@ public class JWTService {
             return null;
         }
 
+    }
+
+
+    public   String findEmailByToken(String token) {
+        String jwt = token.replace("Bearer ", "");
+
+        // Valider et parser le JWT pour obtenir les claims
+        Claims claims = this.getClaimsFromToken(jwt);
+        String email = claims.get("email", String.class);
+        return email;
     }
 }
