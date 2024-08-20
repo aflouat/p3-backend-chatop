@@ -10,8 +10,9 @@ import lombok.Getter;
 
 public class LoginRequest {
     @Schema(description = "User's email", example = "user@example.com")
-    private String login;
 
+
+    private String login;
     @Schema(description = "User's password", example = "P@ssw0rd!")
     private String password;
 

@@ -29,7 +29,6 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers("/api/auth/login",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
@@ -37,6 +36,7 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/api/auth/register",
                                 "/api/auth/me")
+
                         .permitAll()
                         .anyRequest().authenticated()
                 );

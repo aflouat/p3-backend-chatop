@@ -45,7 +45,7 @@ public class UserService {
         return generateToken(user);
     }
 
-    private String generateToken(User user) {
+    public String generateToken(User user) {
         logger.info("Generated token for user: {}", user.getEmail());
 
         return Jwts.builder()

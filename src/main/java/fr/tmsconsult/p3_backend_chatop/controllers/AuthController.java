@@ -11,6 +11,7 @@ import fr.tmsconsult.p3_backend_chatop.security.model.RegisterRequest;
 import fr.tmsconsult.p3_backend_chatop.security.service.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,6 +41,7 @@ public class AuthController {
 
     @Autowired
     private JWTService jwtService;
+
     @Operation(summary = "Authenticate user and return a JWT token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully authenticated",
