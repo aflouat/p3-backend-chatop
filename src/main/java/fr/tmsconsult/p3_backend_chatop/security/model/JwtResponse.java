@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.security.jwt;
+package fr.tmsconsult.p3_backend_chatop.security.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

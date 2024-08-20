@@ -1,7 +1,11 @@
 package fr.tmsconsult.p3_backend_chatop.services;
 
 import fr.tmsconsult.p3_backend_chatop.entities.User;
+import fr.tmsconsult.p3_backend_chatop.models.DeterministicDateProvider;
 import fr.tmsconsult.p3_backend_chatop.repositories.UserRepository;
+import fr.tmsconsult.p3_backend_chatop.security.model.Token;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 
+import javax.crypto.SecretKey;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -21,6 +28,10 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private Token token;
+    //private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Génère une clé secrète sécurisée
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
@@ -43,6 +54,7 @@ public class UserService {
                 .claim("id", user.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 heures de validité
+                .signWith(token.getKey()) // Signer le token avec la clé
                 .compact();
     }
 
@@ -52,5 +64,16 @@ public class UserService {
     public boolean checkPassword(String plainPassword, String hashedPassword) {
 
         return passwordEncoder.matches(plainPassword, hashedPassword);
+    }
+
+    public User register(String name, String login, String password, LocalDateTime created,LocalDateTime updated ) {
+        User user = new User(null,login,name,passwordEncoder.encode(password),created,updated);
+        User saved = userRepository.save(user);
+        return saved;
+    }
+
+    public User findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        return user;
     }
 }

@@ -1,13 +1,15 @@
 package fr.tmsconsult.p3_backend_chatop.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "USERS")
-@Data
+@Data @NoArgsConstructor @AllArgsConstructor
 public class User {
 
     @Id
