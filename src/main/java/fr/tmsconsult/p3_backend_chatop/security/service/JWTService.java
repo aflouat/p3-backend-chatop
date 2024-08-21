@@ -1,10 +1,10 @@
 package fr.tmsconsult.p3_backend_chatop.security.service;
 
 import fr.tmsconsult.p3_backend_chatop.security.model.Token;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +40,28 @@ public class JWTService {
         Claims claims = this.getClaimsFromToken(jwt);
         String email = claims.get("email", String.class);
         return email;
+    }
+
+    public void checkJWTValidity(String token) throws SecurityException {
+        String jwt = token.replace("Bearer ", "");
+        try {
+            // Validate the JWT
+            Jwts.parser()
+                    .setSigningKey(this.token.getKey()) // Use the same secret key to verify the signature
+                    .build()
+                    .parseClaimsJws(jwt);
+        } catch (ExpiredJwtException e) {
+            throw new SecurityException("JWT token has expired", e);
+        } catch (SignatureException e) {
+            throw new SecurityException("Invalid JWT signature", e);
+        } catch (MalformedJwtException e) {
+            throw new SecurityException("Malformed JWT token", e);
+        } catch (UnsupportedJwtException e) {
+            throw new SecurityException("Unsupported JWT token", e);
+        } catch (IllegalArgumentException e) {
+            throw new SecurityException("JWT token is missing or incorrect", e);
+        }
+
+
     }
 }

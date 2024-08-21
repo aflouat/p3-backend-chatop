@@ -24,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import fr.tmsconsult.p3_backend_chatop.services.UserService;
 
+import java.time.LocalDateTime;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -71,8 +73,8 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         logger.info("Register request: {}", registerRequest+" - Email :"+registerRequest.getLogin());
         try {
-            User uSaved = userService.register(registerRequest.getName(),registerRequest.getLogin(), registerRequest.getPassword(),
-                    new DeterministicDateProvider().currentDate,new DeterministicDateProvider().currentDate);
+            User uSaved = userService.register(registerRequest.getName(),registerRequest.getLogin(),
+                    registerRequest.getPassword(), LocalDateTime.now(),LocalDateTime.now() );
             return ResponseEntity.ok(new JwtResponse(uSaved.toString()));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(CANNOT_REGISTER_USER_PLEASE_CHECK_DATA_AND_TRY_AGAIN+" _ "+e.getMessage());

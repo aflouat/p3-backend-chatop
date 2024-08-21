@@ -1,17 +1,17 @@
 package fr.tmsconsult.p3_backend_chatop.models;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-public class DeterministicDateProvider implements DateTimeProvider {
+public class DeterministicDateProvider implements DateProvider {
 
-    public LocalDateTime currentDate;
+    public LocalDate currentDate;
 
     @Override
-    public LocalDateTime now() {
+    public LocalDate now() {
         return currentDate;
     }
     public DeterministicDateProvider() {
-        this.currentDate = LocalDateTime.now();
+        this.currentDate = LocalDate.now();
     }
 
 }
