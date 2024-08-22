@@ -18,15 +18,12 @@ public class RentalDTO {
     private int id;
     private String name;
     private float surface;
-
-
     private float price;
     private String picture;
-
     private String description;
-
     private String createdAt;
     private String updatedAt;
+    private int ownerId;
 
 
 }

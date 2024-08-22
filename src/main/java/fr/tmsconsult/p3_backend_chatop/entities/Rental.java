@@ -29,4 +29,5 @@ public class Rental {
 
     private LocalDate createdAt;
     private LocalDate updatedAt;
+    private int ownerId;
 }

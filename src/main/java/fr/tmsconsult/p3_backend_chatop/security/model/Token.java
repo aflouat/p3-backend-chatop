@@ -24,8 +24,11 @@ public class Token {
 
     @PostConstruct
     public void init() {
+        System.out.println("Clé secrète  : " + key);
+
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         System.out.println("Clé secrète décodée : " + Base64.getEncoder().encodeToString(this.key.getEncoded()));
 
     }
+
 }

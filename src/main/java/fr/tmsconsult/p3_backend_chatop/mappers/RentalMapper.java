@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tmsconsult.p3_backend_chatop.dtos.RentalDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
+import fr.tmsconsult.p3_backend_chatop.models.DeterministicDateProvider;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +32,31 @@ public class RentalMapper {
                 rental.getPicture(),
                 rental.getDescription(),
                 rental.getCreatedAt().toString(),
-                rental.getUpdatedAt().toString()
+                rental.getUpdatedAt().toString(),
+                rental.getOwnerId()
+
         );
     }
+
+    public Rental getOneFromRequest(String name,
+                                    float surface,
+                                    float price,
+                                    MultipartFile picture,
+                                    String description) throws IOException {
+
+        // Save the MultipartFile to a temporary file
+        File tempFile = File.createTempFile("upload", picture.getOriginalFilename());
+        picture.transferTo(tempFile);
+        return new Rental(0,
+                name,
+                surface,
+                price,
+                tempFile.getName(),
+                description,
+                new DeterministicDateProvider().now(),
+                new DeterministicDateProvider().now(),1 //ownerId
+                );
+    }
+
 
 }

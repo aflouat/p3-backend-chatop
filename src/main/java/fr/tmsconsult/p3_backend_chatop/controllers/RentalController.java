@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -89,7 +91,43 @@ public class RentalController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+        @Operation(summary = "submit a rental")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Rental successfully submitted",
+                        content = { @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = JwtResponse.class)) }),
+                @ApiResponse(responseCode = "400", description = "cannot submit rental, please check and try again",
+                        content = @Content)
+        })
+        @PostMapping(value = "/rentals", consumes = {"multipart/form-data"})
+        public ResponseEntity<?> addRental(@RequestHeader("Authorization") String token,
+                                           @RequestParam("name") String name,
+                                           @RequestParam("surface") float surface,
+                                           @RequestParam("price") float price,
+                                           @RequestParam("picture") MultipartFile  picture,
+                                           @RequestParam("description") String description
+                                            ) {
+            try {
 
+                rentalService.addRental(
+                        rentalMapper.getOneFromRequest(
+                                name,
+                                surface,
+                                price,
+                                picture, // Peut être null
+                                description
+                        )
+                );
+
+                return ResponseEntity.ok("Rental successfully added!");
+            } catch (Exception e) {
+                return ResponseEntity.status(400).body("Error adding rental: " + e.getMessage());
+            }
+        }
 
 
 }
+
+
+
+

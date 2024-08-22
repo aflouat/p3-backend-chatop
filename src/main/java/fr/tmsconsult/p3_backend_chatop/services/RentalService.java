@@ -28,4 +28,8 @@ public class RentalService {
     public Rental findRentalById(Integer id) {
         return  rentalRepository.findById(id).orElse(null);
     }
+
+    public void addRental(Rental rental) {
+        rentalRepository.save(rental);
+    }
 }

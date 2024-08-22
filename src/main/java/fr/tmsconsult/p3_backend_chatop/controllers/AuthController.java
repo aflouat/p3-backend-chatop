@@ -1,15 +1,13 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.tmsconsult.p3_backend_chatop.dtos.CurrentUserDTO;
+import fr.tmsconsult.p3_backend_chatop.dtos.UserDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
-import fr.tmsconsult.p3_backend_chatop.models.DeterministicDateProvider;
 import fr.tmsconsult.p3_backend_chatop.security.model.JwtResponse;
 import fr.tmsconsult.p3_backend_chatop.security.model.LoginRequest;
 
 import fr.tmsconsult.p3_backend_chatop.security.model.RegisterRequest;
 import fr.tmsconsult.p3_backend_chatop.security.service.JWTService;
-import io.jsonwebtoken.Claims;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -73,12 +71,17 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         logger.info("Register request: {}", registerRequest+" - Email :"+registerRequest.getLogin());
         try {
-            User uSaved = userService.register(registerRequest.getName(),registerRequest.getLogin(),
-                    registerRequest.getPassword(), LocalDateTime.now(),LocalDateTime.now() );
+            User uSaved = mapToUser(registerRequest);
             return ResponseEntity.ok(new JwtResponse(uSaved.toString()));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(CANNOT_REGISTER_USER_PLEASE_CHECK_DATA_AND_TRY_AGAIN+" _ "+e.getMessage());
         }
+    }
+
+    private User mapToUser(RegisterRequest registerRequest) {
+        User uSaved = userService.register(registerRequest.getName(), registerRequest.getLogin(),
+                registerRequest.getPassword(), LocalDateTime.now(),LocalDateTime.now() );
+        return uSaved;
     }
 
     @Operation(summary = "show informations about the connected user")
@@ -96,12 +99,12 @@ public class AuthController {
             String email = jwtService.findEmailByToken(token);
 
             User uRetrieved = userService.findUserByEmail(email);
-            CurrentUserDTO currentUserDTO = new CurrentUserDTO(uRetrieved.getId(),uRetrieved.getName(),uRetrieved.getEmail(),
+            UserDTO userDTO = new UserDTO(uRetrieved.getId(),uRetrieved.getName(),uRetrieved.getEmail(),
                     uRetrieved.getCreatedAt().toString(),uRetrieved.getUpdatedAt().toString());
             ObjectMapper objectMapper = new ObjectMapper();
 
             // Convert the CurrentUserDTO to JSON
-            String CurrentUserDTOJSON = objectMapper.writeValueAsString(currentUserDTO);
+            String CurrentUserDTOJSON = objectMapper.writeValueAsString(userDTO);
 
             return ResponseEntity.ok(CurrentUserDTOJSON.toString());
         } catch (Exception e) {

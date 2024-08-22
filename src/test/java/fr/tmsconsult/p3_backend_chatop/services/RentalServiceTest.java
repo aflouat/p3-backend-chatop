@@ -27,21 +27,23 @@ public class RentalServiceTest {
         service = new RentalService(repo);
         fakeDateProvider.currentDate = LocalDate.of(2020, 2, 4);
         repo.clear();
-
     }
 
     @Test
-    void canAddRental(){
-        //Given
+    void canAddRental() {
+        // Given
         Rental rental = new Rental(1, "bel appart", 55, 950, "belle facade", "T2 spacieux et lumineux",
-                fakeDateProvider.now(), fakeDateProvider.now());
-        //When
-        repo.save(rental);
-        //Then
+                fakeDateProvider.now(), fakeDateProvider.now(),1);
+
+        // When
+        service.addRental(rental);
+
+        // Then
+        Rental retrievedRental = service.findRentalById(1);
         assertEquals(
-                service.findRentalById(1),
                 new Rental(1, "bel appart", 55, 950, "belle facade", "T2 spacieux et lumineux",
-                        fakeDateProvider.now(), fakeDateProvider.now() )
+                        fakeDateProvider.now(), fakeDateProvider.now(),1),
+                retrievedRental
         );
     }
 
@@ -50,9 +52,9 @@ public class RentalServiceTest {
     public void shouldReturnAllRentalsDTOAsJSON(){
         // Given
         Rental rental1 = new Rental(1, "bel appart", 55, 950, "belle facade", "T2 spacieux et lumineux",
-                fakeDateProvider.now(), fakeDateProvider.now());
+                fakeDateProvider.now(), fakeDateProvider.now(),1);
         Rental rental2 = new Rental(2, "modern studio", 40, 750, "vue sur parc", "Studio moderne et bien agencé",
-                fakeDateProvider.now(), fakeDateProvider.now());
+                fakeDateProvider.now(), fakeDateProvider.now(),1);
 
 
 
@@ -83,9 +85,9 @@ public class RentalServiceTest {
 
         assertNotNull(rentalsJSON);
         String expectedJSON = "[{\"id\":1,\"name\":\"bel appart\",\"surface\":55.0,\"price\":950.0,\"picture\":\"belle facade\",\"description\":\"T2 spacieux et lumineux\",\"createdAt\":\""
-                + fakeDateProvider.now()+ "\",\"updatedAt\":\"" + fakeDateProvider.now() + "\"}," +
+                + fakeDateProvider.now()+ "\",\"updatedAt\":\"" + fakeDateProvider.now() +",1"+ "\"}," +
                 "{\"id\":2,\"name\":\"modern studio\",\"surface\":40.0,\"price\":750.0,\"picture\":\"vue sur parc\",\"description\":\"Studio moderne et bien agencé\",\"createdAt\":\""
-                + fakeDateProvider.now() + "\",\"updatedAt\":\"" + fakeDateProvider.now() + "\"}]";
+                + fakeDateProvider.now() + "\",\"updatedAt\":\"" + fakeDateProvider.now()  +",1"+ "\"}]";
 
         assertEquals(expectedJSON, rentalsJSON);
     }

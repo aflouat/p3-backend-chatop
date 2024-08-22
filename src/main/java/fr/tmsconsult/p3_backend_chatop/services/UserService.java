@@ -21,11 +21,13 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    public UserService(UserRepository userRepository, Token token) {
+        this.userRepository = userRepository;
+        this.token = token;
+    }
 
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @Autowired
     private Token token;
     //private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Génère une clé secrète sécurisée
 
@@ -54,9 +56,7 @@ public class UserService {
                 .compact();
     }
 
-    public String hashPassword(String plainPassword) {
-        return passwordEncoder.encode(plainPassword);
-    }
+
     public boolean checkPassword(String plainPassword, String hashedPassword) {
 
         return passwordEncoder.matches(plainPassword, hashedPassword);
