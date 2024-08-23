@@ -38,7 +38,7 @@ public class RentalMapper {
         );
     }
 
-    public Rental getOneFromRequest(String name,
+    public Rental getOneFromRequest(int id, String name,
                                     float surface,
                                     float price,
                                     MultipartFile picture,
@@ -47,7 +47,7 @@ public class RentalMapper {
         // Save the MultipartFile to a temporary file
         File tempFile = File.createTempFile("upload", picture.getOriginalFilename());
         picture.transferTo(tempFile);
-        return new Rental(0,
+        return new Rental(id,
                 name,
                 surface,
                 price,

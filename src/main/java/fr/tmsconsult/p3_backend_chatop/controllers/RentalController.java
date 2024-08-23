@@ -29,6 +29,8 @@ import java.util.List;
 
 public class RentalController {
     private static final Logger logger = LoggerFactory.getLogger(RentalController.class);
+    public static final String RENTAL_CREATED = "Rental created !";
+    public static final String CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN = "cannot submit rental, please check and try again";
     @Autowired
     private JWTService jwtService;
     @Autowired
@@ -93,10 +95,10 @@ public class RentalController {
     }
         @Operation(summary = "submit a rental")
         @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "Rental successfully submitted",
+                @ApiResponse(responseCode = "200", description = RENTAL_CREATED,
                         content = { @Content(mediaType = "application/json",
                                 schema = @Schema(implementation = JwtResponse.class)) }),
-                @ApiResponse(responseCode = "400", description = "cannot submit rental, please check and try again",
+                @ApiResponse(responseCode = "400", description = CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN,
                         content = @Content)
         })
         @PostMapping(value = "/rentals", consumes = {"multipart/form-data"})
@@ -111,20 +113,56 @@ public class RentalController {
 
                 rentalService.addRental(
                         rentalMapper.getOneFromRequest(
+                                0,
                                 name,
                                 surface,
                                 price,
-                                picture, // Peut être null
+                                picture,
                                 description
                         )
                 );
 
-                return ResponseEntity.ok("Rental successfully added!");
+                return ResponseEntity.ok(RENTAL_CREATED);
             } catch (Exception e) {
-                return ResponseEntity.status(400).body("Error adding rental: " + e.getMessage());
+                return ResponseEntity.status(400).body(CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN);
             }
         }
 
+    @Operation(summary = "update a rental")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rental updated!",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = JwtResponse.class)) }),
+            @ApiResponse(responseCode = "400", description = "cannot update the rental requested, please check and try again",
+                    content = @Content)
+    })
+    @PutMapping (value = "/rentals/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> updateRental(@RequestHeader("Authorization") String token,
+                                          @PathVariable Integer id,
+                                       @RequestParam("name") String name,
+                                       @RequestParam("surface") float surface,
+                                       @RequestParam("price") float price,
+                                       @RequestParam("picture") MultipartFile  picture,
+                                       @RequestParam("description") String description
+    ) {
+        try {
+
+            rentalService.updateRental(
+                    rentalMapper.getOneFromRequest(
+                            id,
+                            name,
+                            surface,
+                            price,
+                            picture,
+                            description
+                    )
+            );
+
+            return ResponseEntity.ok(RENTAL_CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN);
+        }
+    }
 
 }
 

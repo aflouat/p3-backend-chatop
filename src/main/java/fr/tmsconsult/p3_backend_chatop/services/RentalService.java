@@ -32,4 +32,21 @@ public class RentalService {
     public void addRental(Rental rental) {
         rentalRepository.save(rental);
     }
+
+    public void updateRental(Rental rentalToUpdate) {
+        // Check if the rental exists by its ID
+        Rental existingRental = rentalRepository.findById(rentalToUpdate.getId())
+                .orElseThrow(() -> new RuntimeException("Rental not found"));
+
+        // Update the fields of the existing rental
+        existingRental.setName(rentalToUpdate.getName());
+        existingRental.setSurface(rentalToUpdate.getSurface());
+        existingRental.setPrice(rentalToUpdate.getPrice());
+        existingRental.setPicture(rentalToUpdate.getPicture());
+        existingRental.setDescription(rentalToUpdate.getDescription());
+        existingRental.setUpdatedAt(rentalToUpdate.getUpdatedAt()); // or use another method to set the updated date
+
+        // Save the updated rental back to the repository
+        rentalRepository.save(existingRental);
+    }
 }

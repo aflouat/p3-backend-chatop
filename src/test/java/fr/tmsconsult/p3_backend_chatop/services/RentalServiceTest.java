@@ -46,7 +46,6 @@ public class RentalServiceTest {
                 retrievedRental
         );
     }
-
     @SneakyThrows
     @Test
     public void shouldReturnAllRentalsDTOAsJSON(){
@@ -56,16 +55,17 @@ public class RentalServiceTest {
         Rental rental2 = new Rental(2, "modern studio", 40, 750, "vue sur parc", "Studio moderne et bien agencé",
                 fakeDateProvider.now(), fakeDateProvider.now(),1);
 
-
-
-
         // When
         repo.save(rental1);
         repo.save(rental2);
         List<Rental> rentals = service.getAllRentals();
-        System.out.println("rental JSON: " + rentalMapper.getDTOAsJSON(
+
+        // Convert to JSON
+        String rentalsJSON = rentalMapper.getDTOAsJSON(
                 rentalMapper.getDTOFromRentals(rentals)
-        ));
+        );
+
+        System.out.println("Generated JSON: " + rentalsJSON);
 
         // Then
         assertNotNull(rentals);
@@ -73,22 +73,20 @@ public class RentalServiceTest {
         assertEquals("bel appart", rentals.get(0).getName());
         assertEquals("modern studio", rentals.get(1).getName());
 
-        // Convert to JSON
-        //ObjectMapper objectMapper = new ObjectMapper();
-        //objectMapper.registerModule(new JavaTimeModule()); // Register the module for Java 8 date/time types
+        // Ensure the dates are in the expected format
+        String date = fakeDateProvider.now().toString(); // You may need to format this to match your JSON
 
-        String rentalsJSON = rentalMapper.getDTOAsJSON(
-                rentalMapper.getDTOFromRentals(
-                        service.getAllRentals()
-                )
-        );
-
-        assertNotNull(rentalsJSON);
+        // Create the expected JSON string
         String expectedJSON = "[{\"id\":1,\"name\":\"bel appart\",\"surface\":55.0,\"price\":950.0,\"picture\":\"belle facade\",\"description\":\"T2 spacieux et lumineux\",\"createdAt\":\""
-                + fakeDateProvider.now()+ "\",\"updatedAt\":\"" + fakeDateProvider.now() +",1"+ "\"}," +
+                + date + "\",\"updatedAt\":\"" + date + "\",\"ownerId\":1}," +
                 "{\"id\":2,\"name\":\"modern studio\",\"surface\":40.0,\"price\":750.0,\"picture\":\"vue sur parc\",\"description\":\"Studio moderne et bien agencé\",\"createdAt\":\""
-                + fakeDateProvider.now() + "\",\"updatedAt\":\"" + fakeDateProvider.now()  +",1"+ "\"}]";
+                + date + "\",\"updatedAt\":\"" + date + "\",\"ownerId\":1}]";
 
+        System.out.println("Expected JSON: " + expectedJSON);
+
+        // Compare expected and actual JSON strings
         assertEquals(expectedJSON, rentalsJSON);
     }
+
+
 }
