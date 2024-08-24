@@ -24,6 +24,7 @@ public class Rental {
 
     private float price;
     private String picture;
+    @Column(length = 1000)
 
     private String description;
 

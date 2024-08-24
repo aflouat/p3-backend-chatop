@@ -1,10 +1,12 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
 import fr.tmsconsult.p3_backend_chatop.dtos.MessageDTO;
+import fr.tmsconsult.p3_backend_chatop.entities.User;
 import fr.tmsconsult.p3_backend_chatop.mappers.MessageMapper;
 import fr.tmsconsult.p3_backend_chatop.mappers.RentalMapper;
 import fr.tmsconsult.p3_backend_chatop.security.model.JwtResponse;
 import fr.tmsconsult.p3_backend_chatop.services.MessageService;
+import fr.tmsconsult.p3_backend_chatop.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +24,8 @@ public class MessageController {
     public static final String CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN = "Cannot send the message! please check and retry again!";
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private UserService userService;
     private MessageMapper messageMapper = new MessageMapper();
 
     @Operation(summary = "Send a message regarding the rental")
@@ -37,6 +41,11 @@ public class MessageController {
                                          @RequestBody MessageDTO messageDTO
     ) {
         try {
+            System.out.println(token + " " + messageDTO);
+            User user = userService.findUserById(messageDTO.getUserId());
+            if (user == null) {
+                throw new Exception("User does not exist");
+            }
 
             messageService.add(
                     messageMapper.getOneFromRequestToCreate(
@@ -46,7 +55,7 @@ public class MessageController {
 
             return ResponseEntity.ok("message sent");
         } catch (Exception e) {
-            return ResponseEntity.status(400).body(CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN);
+            return ResponseEntity.status(400).body(CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN+" "+e.getMessage());
         }
     }
 

@@ -12,6 +12,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
     public void add(Message message) {
+
         messageRepository.save(message);
     }
 

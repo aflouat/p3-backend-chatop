@@ -3,10 +3,8 @@ package fr.tmsconsult.p3_backend_chatop.services;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
 import fr.tmsconsult.p3_backend_chatop.repositories.UserRepository;
 import fr.tmsconsult.p3_backend_chatop.security.model.Token;
-import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 
 @Service
@@ -70,6 +69,11 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
+        return user;
+    }
+
+    public User findUserById(int id) {
+        User user = userRepository.findById(id).orElse(null);
         return user;
     }
 

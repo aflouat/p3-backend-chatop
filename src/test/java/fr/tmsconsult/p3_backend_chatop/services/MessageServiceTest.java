@@ -13,33 +13,62 @@ public class MessageServiceTest {
 
     private FakeMessageRepository fakeMessageRepository;
     private MessageService messageService;
+    private Message message;
 
     @BeforeEach
     void setUp() {
         fakeMessageRepository = new FakeMessageRepository();
         messageService = new MessageService(fakeMessageRepository);
-    }
 
-    @Test
-    void canCreateMessage() {
-        // Given
-        Message message = new Message();
+        // Initialize a common Message object for all tests
+        message = new Message();
         message.setMessage("Hello, I am interested in this rental.");
         message.setRentalId(1);
         message.setUserId(1);
         message.setCreatedAt(LocalDateTime.now());
         message.setUpdatedAt(LocalDateTime.now());
 
-        // When
+        // Add the message
         messageService.add(message);
+    }
 
-        // Then
+    @Test
+    void canSaveMessage() {
+        // Assert the message was saved
         assertNotNull(fakeMessageRepository.findById(message.getId()));
+    }
+
+    @Test
+    void canCountMessages() {
+        // Assert that the message repository has one entry
         assertEquals(1, fakeMessageRepository.count());
+    }
+
+    @Test
+    void canRetrieveSavedMessage() {
+        // Retrieve and assert the saved message is not null
         Message savedMessage = fakeMessageRepository.findById(message.getId()).orElse(null);
         assertNotNull(savedMessage);
+    }
+
+    @Test
+    void canVerifyMessageContent() {
+        // Assert that the message content matches
+        Message savedMessage = fakeMessageRepository.findById(message.getId()).orElse(null);
         assertEquals("Hello, I am interested in this rental.", savedMessage.getMessage());
+    }
+
+    @Test
+    void canVerifyRentalId() {
+        // Assert that the rental ID matches
+        Message savedMessage = fakeMessageRepository.findById(message.getId()).orElse(null);
         assertEquals(1, savedMessage.getRentalId());
+    }
+
+    @Test
+    void canVerifyUserId() {
+        // Assert that the user ID matches
+        Message savedMessage = fakeMessageRepository.findById(message.getId()).orElse(null);
         assertEquals(1, savedMessage.getUserId());
     }
 }
