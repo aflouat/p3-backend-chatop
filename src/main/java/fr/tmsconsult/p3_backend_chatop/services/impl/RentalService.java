@@ -1,14 +1,10 @@
-package fr.tmsconsult.p3_backend_chatop.services;
+package fr.tmsconsult.p3_backend_chatop.services.impl;
 
-import fr.tmsconsult.p3_backend_chatop.dtos.RentalDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
-import fr.tmsconsult.p3_backend_chatop.repositories.FakeRentalRepository;
 import fr.tmsconsult.p3_backend_chatop.repositories.RentalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RentalService {

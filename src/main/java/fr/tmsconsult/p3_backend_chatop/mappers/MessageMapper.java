@@ -1,8 +1,7 @@
 package fr.tmsconsult.p3_backend_chatop.mappers;
 
-import fr.tmsconsult.p3_backend_chatop.dtos.MessageDTO;
+import fr.tmsconsult.p3_backend_chatop.dtos.requests.MessageDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.Message;
-import fr.tmsconsult.p3_backend_chatop.models.DeterministicDateProvider;
 
 import java.time.LocalDateTime;
 

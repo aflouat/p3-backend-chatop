@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.security.model;
+package fr.tmsconsult.p3_backend_chatop.dtos.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -15,4 +15,7 @@ public class RegisterRequest extends LoginRequest {
     private String name;
 
 
+    public Object getUserName() {
+        return name;
+    }
 }

@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.services;
+package fr.tmsconsult.p3_backend_chatop.services.impl;
 
 import fr.tmsconsult.p3_backend_chatop.entities.Message;
 import fr.tmsconsult.p3_backend_chatop.repositories.MessageRepository;

@@ -38,3 +38,7 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
    ```bash
    git clone https://github.com/aflouat/p3-backend-chatop.git
    cd p3-backend-chatop
+
+procédure pas à pas pour installer et lancer le projet ;
+procédure d’installation de la base de données ;
+http://localhost:8080/swagger-ui/index.html

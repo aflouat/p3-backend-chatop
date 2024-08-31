@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.dtos;
+package fr.tmsconsult.p3_backend_chatop.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

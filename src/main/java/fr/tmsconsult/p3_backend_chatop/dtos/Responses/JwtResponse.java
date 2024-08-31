@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.security.model;
+package fr.tmsconsult.p3_backend_chatop.dtos.Responses;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -1,42 +1,22 @@
 package fr.tmsconsult.p3_backend_chatop.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
-
+@Getter @Setter
 @Entity
-@Table(name = "USERS")
-@Data @NoArgsConstructor @AllArgsConstructor
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    private String name;
-
-    @Column(nullable = false)
+    private int id;
+    private String username;
     private String password;
 
-    private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
 }

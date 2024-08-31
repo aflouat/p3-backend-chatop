@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.controllers.config;
+package fr.tmsconsult.p3_backend_chatop.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;

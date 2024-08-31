@@ -1,31 +1,31 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
-import fr.tmsconsult.p3_backend_chatop.dtos.MessageDTO;
+import fr.tmsconsult.p3_backend_chatop.dtos.requests.MessageDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
 import fr.tmsconsult.p3_backend_chatop.mappers.MessageMapper;
-import fr.tmsconsult.p3_backend_chatop.mappers.RentalMapper;
-import fr.tmsconsult.p3_backend_chatop.security.model.JwtResponse;
-import fr.tmsconsult.p3_backend_chatop.services.MessageService;
-import fr.tmsconsult.p3_backend_chatop.services.UserService;
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
+import fr.tmsconsult.p3_backend_chatop.services.impl.MessageService;
+import fr.tmsconsult.p3_backend_chatop.services.impl.MyUserDetailsService;
+import fr.tmsconsult.p3_backend_chatop.services.impl.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MessageController {
     public static final String CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN = "Cannot send the message! please check and retry again!";
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private UserService userService;
+    private final MessageService messageService;
+
+    private final MyUserDetailsService myUserDetailsService;
     private MessageMapper messageMapper = new MessageMapper();
 
     @Operation(summary = "Send a message regarding the rental")
@@ -42,10 +42,7 @@ public class MessageController {
     ) {
         try {
             System.out.println(token + " " + messageDTO);
-            User user = userService.findUserById(messageDTO.getUserId());
-            if (user == null) {
-                throw new Exception("User does not exist");
-            }
+
 
             messageService.add(
                     messageMapper.getOneFromRequestToCreate(
