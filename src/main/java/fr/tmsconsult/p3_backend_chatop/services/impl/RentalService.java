@@ -2,26 +2,20 @@ package fr.tmsconsult.p3_backend_chatop.services.impl;
 
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
 import fr.tmsconsult.p3_backend_chatop.repositories.RentalRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RentalService {
     private final RentalRepository rentalRepository;
-
-
-    public RentalService(RentalRepository rentalRepository) {
-        this.rentalRepository = rentalRepository;
-    }
-
     public List<Rental> getAllRentals() {
         return rentalRepository.findAll();
     }
 
-
-
-    public Rental findRentalById(Integer id) {
+   public Rental findRentalById(Integer id) {
         return  rentalRepository.findById(id).orElse(null);
     }
 

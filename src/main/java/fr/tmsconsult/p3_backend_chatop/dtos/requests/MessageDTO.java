@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class MessageDTO {
 
@@ -17,4 +16,16 @@ public class MessageDTO {
     private int userId;
     @JsonProperty("rental_id")
     private int rentalId;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public int getRentalId() {
+        return rentalId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
 }

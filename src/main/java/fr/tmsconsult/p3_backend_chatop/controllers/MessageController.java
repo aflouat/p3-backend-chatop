@@ -20,12 +20,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class MessageController {
     public static final String CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN = "Cannot send the message! please check and retry again!";
     private final MessageService messageService;
 
     private final MyUserDetailsService myUserDetailsService;
+
+    public MessageController( MessageService messageService,  MyUserDetailsService myUserDetailsService) {
+        this.messageService = messageService;
+        this.myUserDetailsService = myUserDetailsService;
+    }
+
     private MessageMapper messageMapper = new MessageMapper();
 
     @Operation(summary = "Send a message regarding the rental")

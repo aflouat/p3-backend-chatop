@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-
+@RequiredArgsConstructor
 public class RentalController {
     private static final Logger logger = LoggerFactory.getLogger(RentalController.class);
     public static final String RENTAL_CREATED = "Rental created !";
     public static final String CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN = "cannot submit rental, please check and try again";
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RentalService rentalService;
+    private final UserService userService;
+    private final RentalService rentalService;
+
 
 
     private RentalMapper rentalMapper = new RentalMapper();

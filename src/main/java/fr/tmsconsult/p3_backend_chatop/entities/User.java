@@ -1,22 +1,20 @@
 package fr.tmsconsult.p3_backend_chatop.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Getter @Setter
 @Entity
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
+@Getter
+@Setter
 @Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String username;
+    private String email;
     private String password;
-
-
-
 
 }

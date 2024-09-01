@@ -14,13 +14,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final JWTService jwtService;
-
     private final AuthenticationManager authManager;
-
     private final UserRepo repo;
-
-
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public User register(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
@@ -29,9 +25,9 @@ public class UserService {
     }
 
     public String verify(User user) {
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUsername());
+            return jwtService.generateToken(user.getEmail());
         } else {
             return "fail";
         }

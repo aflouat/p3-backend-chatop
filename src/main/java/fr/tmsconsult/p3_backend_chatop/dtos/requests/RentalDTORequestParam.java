@@ -14,4 +14,8 @@ public class RentalDTORequestParam {
     private float price;
     private MultipartFile picture;
     private String description;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
