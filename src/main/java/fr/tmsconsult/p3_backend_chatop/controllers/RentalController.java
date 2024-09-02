@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +47,8 @@ public class RentalController {
                     content = @Content)
     })
     @GetMapping(value = "/rentals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllRentals(@RequestHeader("Authorization") String token) {
-        logger.info(" request header rentals: {}", token);
+    public ResponseEntity<?> getAllRentals(HttpServletRequest request) {
+        logger.info(" request  rentals: {}", request);
         try {
 
             return ResponseEntity.ok(

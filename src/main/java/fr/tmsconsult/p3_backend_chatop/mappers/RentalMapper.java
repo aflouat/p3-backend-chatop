@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RentalMapper {
+    //TODO define Mapper interface
     public String convertRentalDTOListToJSON(List<RentalDTO> rentalsDTO) throws JsonProcessingException {
         return new ObjectMapper().
                 writeValueAsString(

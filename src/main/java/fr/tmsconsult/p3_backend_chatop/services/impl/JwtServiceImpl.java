@@ -1,5 +1,6 @@
 package fr.tmsconsult.p3_backend_chatop.services.impl;
 
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -17,12 +18,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JWTService {
+public class JwtServiceImpl implements IJwtService {
 
 
     private String secretkey = "cedb81db8c25735d752de9a5d45e3dcafecdf1c3166ab5025ee36cb5176231b6";
 
-    public JWTService() {
+    public JwtServiceImpl() {
 
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
@@ -35,19 +36,21 @@ public class JWTService {
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder()
+        String token  = Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30* 1000))
                 .and()
                 .signWith(getKey())
                 .compact();
+        System.out.println("generated token: " + token);
+        return token;
 
     }
 
-    private SecretKey getKey() {
+    public SecretKey getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretkey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -57,12 +60,12 @@ public class JWTService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
+    public  <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
@@ -75,11 +78,11 @@ public class JWTService {
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 

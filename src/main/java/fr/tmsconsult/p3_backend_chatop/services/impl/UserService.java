@@ -1,6 +1,8 @@
 package fr.tmsconsult.p3_backend_chatop.services.impl;
 
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.UserDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
+import fr.tmsconsult.p3_backend_chatop.mappers.UserMapper;
 import fr.tmsconsult.p3_backend_chatop.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final JWTService jwtService;
+    private final JwtServiceImpl jwtServiceImpl;
     private final AuthenticationManager authManager;
     private final UserRepo repo;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
@@ -27,9 +29,14 @@ public class UserService {
     public String verify(User user) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getEmail());
+            return jwtServiceImpl.generateToken(user.getEmail());
         } else {
             return "fail";
         }
+    }
+    public UserDTO fetchUserDTOByToken(String token) {
+        String email = jwtServiceImpl.extractEmail(token);
+        User user = repo.findByEmail(email);
+        return  UserMapper.INSTANCE.userToUserDTO(user);
     }
 }

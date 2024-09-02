@@ -1,4 +1,4 @@
-package fr.tmsconsult.p3_backend_chatop.dtos.requests;
+package fr.tmsconsult.p3_backend_chatop.dtos.Responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

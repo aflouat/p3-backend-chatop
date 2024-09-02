@@ -1,8 +1,8 @@
 package fr.tmsconsult.p3_backend_chatop.config;
 
 
-import fr.tmsconsult.p3_backend_chatop.services.impl.JWTService;
-import fr.tmsconsult.p3_backend_chatop.services.impl.MyUserDetailsService;
+import fr.tmsconsult.p3_backend_chatop.services.impl.JwtServiceImpl;
+import fr.tmsconsult.p3_backend_chatop.services.impl.MyUserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +20,9 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final JWTService jwtService;
+    private final JwtServiceImpl jwtServiceImpl;
     private final ApplicationContext context;
+    private final JwtUtil jwtUtil;
 
 
 
@@ -29,11 +30,11 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token = extractTokenFromRequest(request);
+        String token = jwtUtil.extractTokenFromRequest(request);
         String email = null;
         System.out.println("token: " + token);
         if (token!=null && !token.isEmpty()){
-            email = jwtService.extractEmail(token);
+            email = jwtServiceImpl.extractEmail(token);
         }
         updateSecurityContextWithJwtAuthentication(request, email, token);
         filterChain.doFilter(request, response);
@@ -43,14 +44,14 @@ public class JwtFilter extends OncePerRequestFilter {
         if (hasToBoAuthenticated(username)) {
             System.out.println("login request: " + username);
             UserDetails userDetails = context.
-                    getBean(MyUserDetailsService.class).
+                    getBean(MyUserDetailsServiceImpl.class).
                     loadUserByUsername(username);
             validateToken(request, token, userDetails);
         }
     }
 
     private void validateToken(HttpServletRequest request, String token, UserDetails userDetails) {
-        boolean isValidToken = jwtService.hasTokenNotExpiredAndExistingUser(token, userDetails);
+        boolean isValidToken = jwtServiceImpl.hasTokenNotExpiredAndExistingUser(token, userDetails);
         if (isValidToken) {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                     null, userDetails.getAuthorities());
@@ -64,16 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
 
-    private String extractTokenFromRequest(HttpServletRequest request) {
-        String token="";
-        String authHeader = request.getHeader("Authorization");
-System.out.println("authHeader: " + authHeader);
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-            token = authHeader.substring(7);
-        }
-        return token;
-    }
 
     private static boolean hasToBoAuthenticated(String username) {
         return username != null && SecurityContextHolder.getContext().getAuthentication() == null;
