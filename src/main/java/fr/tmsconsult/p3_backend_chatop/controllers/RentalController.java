@@ -1,9 +1,13 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.tmsconsult.p3_backend_chatop.config.JwtUtil;
+import fr.tmsconsult.p3_backend_chatop.config.WebConfig;
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.AllRentalsDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.RentalCreatedDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTORequestParam;
-import fr.tmsconsult.p3_backend_chatop.entities.User;
+import fr.tmsconsult.p3_backend_chatop.entities.Rental;
 import fr.tmsconsult.p3_backend_chatop.mappers.RentalMapper;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
 import fr.tmsconsult.p3_backend_chatop.services.impl.RentalService;
@@ -17,10 +21,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -29,13 +37,15 @@ public class RentalController {
     private static final Logger logger = LoggerFactory.getLogger(RentalController.class);
     public static final String RENTAL_CREATED = "Rental created !";
     public static final String CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN = "cannot submit rental, please check and try again";
+    private static final Object RENTAL_UPDATED_SUCCESSFULLY = "Rental updated successfully !"; ;
 
-    private final UserService userService;
     private final RentalService rentalService;
+    private final WebConfig webConfig;
+    private final UserService userService;
 
 
-
-    private RentalMapper rentalMapper = new RentalMapper();
+    private final RentalMapper rentalMapper = RentalMapper.INSTANCE; // Accessing the mapper instance
+    private final JwtUtil jwtUtil;
 
 
     @Operation(summary = "get all rentals for a connected user")
@@ -50,14 +60,18 @@ public class RentalController {
     public ResponseEntity<?> getAllRentals(HttpServletRequest request) {
         logger.info(" request  rentals: {}", request);
         try {
+            List<Rental> rentals = rentalService.getAllRentals();
+            List<RentalDTO> rentalDTOS = new ArrayList<>();
+            for (Rental rental : rentals) {
+                rentalDTOS.add(rentalMapper.rentalToRentalDTO(rental));
+            }
 
-            return ResponseEntity.ok(
-                    new RentalMapper()
-                            .convertRentalDTOListToJSON(
-                                rentalMapper.convertRentalListToRentalDTOList(
-                                    rentalService.getAllRentals())));
+            String jsonResponse = new ObjectMapper().
+                    writeValueAsString(
+                            new AllRentalsDTO(rentalDTOS));
+            return ResponseEntity.ok(jsonResponse);
         } catch (Exception e) {
-
+            logger.error(e.getMessage());
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
@@ -78,11 +92,11 @@ public class RentalController {
         try {
 
 
-            RentalDTO foundedRental = rentalMapper.convertRentalToRentalDTO(
+            RentalDTO foundedRental = rentalMapper.rentalToRentalDTO(
                     rentalService.findRentalById(id)
             );
-
-            return ResponseEntity.ok(rentalMapper.convertOneToJSON(foundedRental));
+            ObjectMapper objectMapper = new ObjectMapper();
+            return ResponseEntity.ok(  objectMapper.writeValueAsString(foundedRental));
         } catch (Exception e) {
 
             return ResponseEntity.status(404).body(e.getMessage());
@@ -97,19 +111,36 @@ public class RentalController {
                         content = @Content)
         })
         @PostMapping(value = "/rentals", consumes = {"multipart/form-data"})
-        public ResponseEntity<?> addRental(@RequestHeader("Authorization") String token,
+        public ResponseEntity<?> addRental(HttpServletRequest request,
                                            @ModelAttribute RentalDTORequestParam rentalDTORequestParam
                                             ) {
             try {
+                String uploadDir = System.getProperty("user.dir") + "/"+webConfig.getUploadDir();
+                File uploadFile = new File(uploadDir + rentalDTORequestParam.getPicture().getOriginalFilename());
+                rentalDTORequestParam.getPicture().transferTo(uploadFile);
+                String fileUrl = webConfig.getProtocol()+ "://"+
+                        webConfig.getHostname()+":"+webConfig.getPort()+"/"+
+                        webConfig.getUploadDir() +
+                        rentalDTORequestParam.getPicture().getOriginalFilename();
+                String token =jwtUtil.extractTokenFromRequest(request);
 
                 rentalService.addRental(
-                        rentalMapper.convertRentalRequestParamToRental(
-                           rentalDTORequestParam
+                        new Rental(0,
+                                rentalDTORequestParam.getName(),
+                                rentalDTORequestParam.getSurface(),
+                                rentalDTORequestParam.getPrice(),
+                                fileUrl,
+                                rentalDTORequestParam.getDescription(),
+                                LocalDate.now(),
+                                LocalDate.now(),
+                                userService.fetchUserByToken(token).getId()
                         )
                 );
 
                 return ResponseEntity.ok(new RentalCreatedDTO(RENTAL_CREATED));
+
             } catch (Exception e) {
+                logger.error(e.getMessage());
                 return ResponseEntity.status(400).body(CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN);
             }
         }
@@ -130,13 +161,12 @@ public class RentalController {
         try {
             rentalDTORequestParam.setId(id);
             rentalService.updateRental(
-                    rentalMapper.convertRentalRequestParamToRental(
-                      rentalDTORequestParam
-                    )
+                    rentalMapper.rentalDTORequestParamToRental(rentalDTORequestParam)
             );
 
-            return ResponseEntity.ok(RENTAL_CREATED);
+            return ResponseEntity.ok(RENTAL_UPDATED_SUCCESSFULLY);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.status(400).body(CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN);
         }
     }

@@ -10,24 +10,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MessageController {
     public static final String CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN = "Cannot send the message! please check and retry again!";
     private final MessageServiceImpl messageServiceImpl;
 
     private final MyUserDetailsServiceImpl myUserDetailsServiceImpl;
-
-    public MessageController(MessageServiceImpl messageServiceImpl, MyUserDetailsServiceImpl myUserDetailsServiceImpl) {
-        this.messageServiceImpl = messageServiceImpl;
-        this.myUserDetailsServiceImpl = myUserDetailsServiceImpl;
-    }
-
-    private MessageMapper messageMapper = new MessageMapper();
+    private final MessageMapper messageMapper = MessageMapper.INSTANCE;
 
     @Operation(summary = "Send a message regarding the rental")
     @ApiResponses(value = {
@@ -46,9 +42,7 @@ public class MessageController {
 
 
             messageServiceImpl.add(
-                    messageMapper.getOneFromRequestToCreate(
-                            messageDTO
-                    )
+                 messageMapper.messageDTOToMessage(messageDTO)
             );
 
             return ResponseEntity.ok("message sent");

@@ -1,71 +1,24 @@
 package fr.tmsconsult.p3_backend_chatop.mappers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.tmsconsult.p3_backend_chatop.dtos.Responses.AllRentalsDTO;
+
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTORequestParam;
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
-import fr.tmsconsult.p3_backend_chatop.models.DeterministicDateProvider;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+@Mapper
+public interface RentalMapper {
+    RentalMapper INSTANCE = Mappers.getMapper(RentalMapper.class);
 
-public class RentalMapper {
-    //TODO define Mapper interface
-    public String convertRentalDTOListToJSON(List<RentalDTO> rentalsDTO) throws JsonProcessingException {
-        return new ObjectMapper().
-                writeValueAsString(
-                new AllRentalsDTO(rentalsDTO));
-    }
-    public List<RentalDTO> convertRentalListToRentalDTOList(List<Rental> rentals) {
-        List<RentalDTO> rentalsDTO = rentals.stream()
-                .map(this::convertRentalToRentalDTO)
-                .collect(Collectors.toList());
-        return rentalsDTO;
-    }
-    public RentalDTO convertRentalToRentalDTO(Rental rental) {
-        return new RentalDTO(
-                rental.getId(),
-                rental.getName(),
-                rental.getSurface(),
-                rental.getPrice(),
-                rental.getPicture(),
-                rental.getDescription(),
-                rental.getCreatedAt().toString(),
-                rental.getUpdatedAt().toString(),
-                rental.getOwnerId()
+    @Mapping(source = "createdAt", target = "createdAt", dateFormat = "yyyy-MM-dd")
+    @Mapping(source = "updatedAt", target = "updatedAt", dateFormat = "yyyy-MM-dd")
+    RentalDTO rentalToRentalDTO(Rental rental);
 
-        );
-    }
+    @Mapping(target = "picture", ignore = true) // Since you're handling file upload separately
+    Rental rentalDTORequestParamToRental(RentalDTORequestParam rentalDTORequestParam);
 
-    public Rental convertRentalRequestParamToRental(RentalDTORequestParam rentalDTORequestParam) throws IOException {
-        String uploadDir = System.getProperty("user.dir") + "/uploads/";
-
-        File uploadDirectory = new File(uploadDir);
-        if (!uploadDirectory.exists()) {
-            uploadDirectory.mkdirs();  // Create the directory if it doesn't exist
-        }
-        File uploadFile = new File(uploadDir + rentalDTORequestParam.getPicture().getOriginalFilename());
-        rentalDTORequestParam.getPicture().transferTo(uploadFile);
-        String fileUrl = "http://localhost:3001/uploads/" + rentalDTORequestParam.getPicture().getOriginalFilename();
-
-        return new Rental(0,
-                rentalDTORequestParam.getName(),
-                rentalDTORequestParam.getSurface(),
-                rentalDTORequestParam.getPrice(),
-                fileUrl,
-                rentalDTORequestParam.getDescription(),
-                new DeterministicDateProvider().now(),
-                new DeterministicDateProvider().now(),
-                1 //Todo ownerId
-                );
-    }
-    public String convertOneToJSON(RentalDTO rentalDTO) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(rentalDTO);
-    }
 
 }

@@ -39,4 +39,9 @@ public class UserService {
         User user = repo.findByEmail(email);
         return  UserMapper.INSTANCE.userToUserDTO(user);
     }
+    public User fetchUserByToken(String token) {
+        String email = jwtServiceImpl.extractEmail(token);
+        User user = repo.findByEmail(email);
+        return  user;
+    }
 }
