@@ -96,7 +96,7 @@ public class RentalController {
                     rentalService.findRentalById(id)
             );
             ObjectMapper objectMapper = new ObjectMapper();
-            return ResponseEntity.ok(  objectMapper.writeValueAsString(foundedRental));
+            return ResponseEntity.ok(objectMapper.writeValueAsString(foundedRental));
         } catch (Exception e) {
 
             return ResponseEntity.status(404).body(e.getMessage());

@@ -1,6 +1,9 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tmsconsult.p3_backend_chatop.config.JwtUtil;
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.AllRentalsDTO;
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.UserDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
 import fr.tmsconsult.p3_backend_chatop.services.impl.UserService;
@@ -26,11 +29,12 @@ public class UserController {
 
     }
 
-    @PostMapping(value = "/login" , produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/login" , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody User user) {
+        Map<String, String> response = new HashMap<>();
+        String token = service.verify(user);
 
-
-        return ResponseEntity.ok(service.verify(user));
+        return ResponseEntity.ok(new JwtResponse(token));
     }
     @GetMapping("/me")
     public UserDTO loadConnectedUser(HttpServletRequest request) {

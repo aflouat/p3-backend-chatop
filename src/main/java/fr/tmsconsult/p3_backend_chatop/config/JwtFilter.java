@@ -30,25 +30,29 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getServletPath();
+
+        if (path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+            filterChain.doFilter(request, response);
+            return;  // Continuer la chaîne sans vérification JWT pour ces routes
+        }
         String token = jwtUtil.extractTokenFromRequest(request);
         String email = null;
         System.out.println("token: " + token);
         if (token!=null && !token.isEmpty()){
             email = jwtServiceImpl.extractEmail(token);
         }
-        updateSecurityContextWithJwtAuthentication(request, email, token);
+        if (hasToBoAuthenticated(email)) {
+            System.out.println("login request: " + email);
+            UserDetails userDetails = context.
+                    getBean(MyUserDetailsServiceImpl.class).
+                    loadUserByUsername(email);
+            validateToken(request, token, userDetails);
+        }
         filterChain.doFilter(request, response);
     }
 
-    private void updateSecurityContextWithJwtAuthentication(HttpServletRequest request, String username, String token) {
-        if (hasToBoAuthenticated(username)) {
-            System.out.println("login request: " + username);
-            UserDetails userDetails = context.
-                    getBean(MyUserDetailsServiceImpl.class).
-                    loadUserByUsername(username);
-            validateToken(request, token, userDetails);
-        }
-    }
+
 
     private void validateToken(HttpServletRequest request, String token, UserDetails userDetails) {
         boolean isValidToken = jwtServiceImpl.hasTokenNotExpiredAndExistingUser(token, userDetails);

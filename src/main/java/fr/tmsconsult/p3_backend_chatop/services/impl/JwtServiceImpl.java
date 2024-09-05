@@ -1,10 +1,13 @@
 package fr.tmsconsult.p3_backend_chatop.services.impl;
 
+import fr.tmsconsult.p3_backend_chatop.controllers.RentalController;
 import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,7 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImpl implements IJwtService {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
     private String secretkey = "cedb81db8c25735d752de9a5d45e3dcafecdf1c3166ab5025ee36cb5176231b6";
 
     public JwtServiceImpl() {
@@ -37,14 +40,15 @@ public class JwtServiceImpl implements IJwtService {
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         String token  = Jwts.builder()
-                .claim("sub",username)
-                .issuedAt(new Date(System.currentTimeMillis()))  // Date d'émission du token
-                .expiration(new Date(System.currentTimeMillis() + 30 * 60 * 60 * 1000))  // Expiration dans 30 heures
-                .signWith(getKey())  // Clé pour la signature
+                .claims()
+                .add(claims)
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30* 1000))
+                .and()
+                .signWith(getKey())
                 .compact();
-
-
-        System.out.println("generated token: " + token);
+        logger.info("generated token: " + token);
         return token;
 
     }
