@@ -15,16 +15,22 @@
 	<description>Estate chatop backend</description>
 	<url/>
 	<licenses>
-		<license/>
+		<license>
+			<name>GPL</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+		</license>
 	</licenses>
 	<developers>
-		<developer />
+		<developer>
+			<name>Aflouat ABDEL WEDOUD</name>
+			<email>aflouat@gmail.com</email>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
-		<url/>
+		<url>https://github.com/aflouat/p3-backend-chatop</url>
 	</scm>
 	<properties>
 		<java.version>22</java.version>
