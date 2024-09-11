@@ -50,4 +50,12 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
    ```bash 
    https://github.com/aflouat/P3-frontend-chatop
    
-5. démarrer le frontend angular
+5. démarrer le frontend angular avec :
+ ```bash 
+   cd P3-frontend-chatop
+   ./ng serve
+
+```
+6. accéder au swagger pour tester les endpoints :
+```bash
+http://localhost:3001/swagger-ui/index.html

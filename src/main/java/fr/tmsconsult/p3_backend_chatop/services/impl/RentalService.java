@@ -2,9 +2,12 @@ package fr.tmsconsult.p3_backend_chatop.services.impl;
 
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
 import fr.tmsconsult.p3_backend_chatop.repositories.RentalRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,7 +29,7 @@ public class RentalService {
     public void updateRental(Rental rentalToUpdate) {
         // Check if the rental exists by its ID
         Rental existingRental = rentalRepository.findById(rentalToUpdate.getId())
-                .orElseThrow(() -> new RuntimeException("Rental not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
 
         // Update the fields of the existing rental
         existingRental.setName(rentalToUpdate.getName());
@@ -34,8 +37,7 @@ public class RentalService {
         existingRental.setPrice(rentalToUpdate.getPrice());
         existingRental.setPicture(rentalToUpdate.getPicture());
         existingRental.setDescription(rentalToUpdate.getDescription());
-        existingRental.setUpdatedAt(rentalToUpdate.getUpdatedAt()); // or use another method to set the updated date
-
+        existingRental.setUpdatedAt(LocalDate.now());
         // Save the updated rental back to the repository
         rentalRepository.save(existingRental);
     }
