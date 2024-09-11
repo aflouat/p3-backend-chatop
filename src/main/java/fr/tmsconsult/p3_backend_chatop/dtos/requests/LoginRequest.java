@@ -1,5 +1,6 @@
-package fr.tmsconsult.p3_backend_chatop.security.model;
+package fr.tmsconsult.p3_backend_chatop.dtos.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.Getter;
@@ -11,9 +12,9 @@ import lombok.Getter;
 public class LoginRequest {
     @Schema(description = "User's email", example = "user@example.com")
 
+    @JsonProperty("email")
     private String login;
     @Schema(description = "User's password", example = "P@ssw0rd!")
-
     private String password;
 
 }

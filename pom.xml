@@ -15,19 +15,29 @@
 	<description>Estate chatop backend</description>
 	<url/>
 	<licenses>
-		<license/>
+		<license>
+			<name>GPL</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<name>Aflouat ABDEL WEDOUD</name>
+			<email>aflouat@gmail.com</email>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
-		<url/>
+		<url>https://github.com/aflouat/p3-backend-chatop</url>
 	</scm>
 	<properties>
 		<java.version>22</java.version>
+
+			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+			<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
 	</properties>
 	<dependencies>
 		<dependency>
@@ -95,8 +105,25 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.17.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>1.6.0</version>
+		</dependency>
 
 
+	
 	</dependencies>
 
 	<build>
@@ -111,6 +138,30 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+
+
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.34</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>1.6.0</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>
