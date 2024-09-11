@@ -37,7 +37,7 @@ public class RentalController {
     private static final Logger logger = LoggerFactory.getLogger(RentalController.class);
     public static final String RENTAL_CREATED = "Rental created !";
     public static final String CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN = "cannot submit rental, please check and try again";
-    private static final Object RENTAL_UPDATED_SUCCESSFULLY = "Rental updated successfully !"; ;
+    private static final String RENTAL_UPDATED_SUCCESSFULLY = "Rental updated successfully !"; ;
 
     private final RentalService rentalService;
     private final WebConfig webConfig;
@@ -164,7 +164,7 @@ public class RentalController {
                     rentalMapper.rentalDTORequestParamToRental(rentalDTORequestParam)
             );
 
-            return ResponseEntity.ok(RENTAL_UPDATED_SUCCESSFULLY);
+            return ResponseEntity.ok(new RentalCreatedDTO(RENTAL_UPDATED_SUCCESSFULLY));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(400).body(CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN);

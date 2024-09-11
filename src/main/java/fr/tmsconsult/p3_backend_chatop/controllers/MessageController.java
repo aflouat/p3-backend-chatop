@@ -1,5 +1,6 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.MessageSentDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.MessageDTO;
 import fr.tmsconsult.p3_backend_chatop.mappers.MessageMapper;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MessageController {
     public static final String CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN = "Cannot send the message! please check and retry again!";
+    public static final String MESSAGE_SENT = "message sent";
     private final MessageServiceImpl messageServiceImpl;
 
     private final MyUserDetailsServiceImpl myUserDetailsServiceImpl;
@@ -45,7 +47,7 @@ public class MessageController {
                  messageMapper.messageDTOToMessage(messageDTO)
             );
 
-            return ResponseEntity.ok("message sent");
+            return ResponseEntity.ok(new MessageSentDTO(MESSAGE_SENT));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN+" "+e.getMessage());
         }
