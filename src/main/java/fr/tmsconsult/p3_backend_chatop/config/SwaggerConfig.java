@@ -16,6 +16,6 @@ public class SwaggerConfig {
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Chatop Wiki Documentation")
-                        .url("https://github.com/aflouat/p3-backend-chatop/blob/main/readme.md"));
+                        .url("https://chatop.wiki.github.org/docs"));
     }
 }
