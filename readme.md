@@ -59,3 +59,22 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
 6. accéder au swagger pour tester les endpoints :
 ```bash
 http://localhost:3001/swagger-ui/index.html
+
+
+
+Remarques :
+Dans les critères d'éval : 
+## bloquant
+1 - tester les swaggers-ui fonctionne avec authentification  
+2 - fix register 
+4 - code propre (relivrer les corrections)  +documenter les méthodes si ne nom n'est pas parlant plutôt dans les interfaces+ override pour les méthodes dans les implem 
+
+6- (4) infos sensibles à ne pas voir dans le code : url BD, secret ,login,password (variable global ${} à inclure dans le readme)
+
+##améliorations
+principe solide à revoir
+un gestionnaire d'erreur API, @ControllerAdvice
+dans la doc, envoyer 401, si email non trouvé sur le login+400 si register.
+3 - clean console
+5- ajouter le sql dans le readme
+utiliser spring validation pour vérifier la validité des champs pour les entrés

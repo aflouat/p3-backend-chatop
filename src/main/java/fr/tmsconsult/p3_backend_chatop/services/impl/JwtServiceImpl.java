@@ -1,6 +1,5 @@
 package fr.tmsconsult.p3_backend_chatop.services.impl;
 
-import fr.tmsconsult.p3_backend_chatop.controllers.RentalController;
 import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +7,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
@@ -24,14 +22,15 @@ import java.util.function.Function;
 public class JwtServiceImpl implements IJwtService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
-    private String secretkey = "cedb81db8c25735d752de9a5d45e3dcafecdf1c3166ab5025ee36cb5176231b6";
-
+    public static final String KEY_GEN_ALGORITHM = "HmacSHA256";
+    private String secretKey = "cedb81db8c25735d752de9a5d45e3dcafecdf1c3166ab5025ee36cb5176231b6";
+//TODO check si faux token sur la signature ##amelioration
     public JwtServiceImpl() {
 
         try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+            KeyGenerator keyGen = KeyGenerator.getInstance(KEY_GEN_ALGORITHM);
             SecretKey sk = keyGen.generateKey();
-            secretkey = Base64.getEncoder().encodeToString(sk.getEncoded());
+            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -54,12 +53,11 @@ public class JwtServiceImpl implements IJwtService {
     }
 
     public SecretKey getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretkey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String extractEmail(String token) {
-        // extract the email from jwt token
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -76,10 +74,7 @@ public class JwtServiceImpl implements IJwtService {
                 .getPayload();
     }
 
-    public boolean hasTokenNotExpiredAndExistingUser(String token, UserDetails userDetails) {
-        final String email = extractEmail(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
+
 
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

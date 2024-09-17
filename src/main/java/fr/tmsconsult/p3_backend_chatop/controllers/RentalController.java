@@ -6,7 +6,7 @@ import fr.tmsconsult.p3_backend_chatop.config.WebConfig;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.AllRentalsDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.RentalCreatedDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTO;
-import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTORequestParam;
+import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalRequest;
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
 import fr.tmsconsult.p3_backend_chatop.mappers.RentalMapper;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
@@ -26,7 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +88,7 @@ public class RentalController {
                     content = @Content)
     })
     @GetMapping(value = "/rentals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findRentalById(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
+    public ResponseEntity<?> findRentalById( @PathVariable Integer id) {
         try {
 
 
@@ -112,28 +112,28 @@ public class RentalController {
         })
         @PostMapping(value = "/rentals", consumes = {"multipart/form-data"})
         public ResponseEntity<?> addRental(HttpServletRequest request,
-                                           @ModelAttribute RentalDTORequestParam rentalDTORequestParam
+                                           @ModelAttribute RentalRequest rentalRequest
                                             ) {
             try {
                 String uploadDir = System.getProperty("user.dir") + "/"+webConfig.getUploadDir();
-                File uploadFile = new File(uploadDir + rentalDTORequestParam.getPicture().getOriginalFilename());
-                rentalDTORequestParam.getPicture().transferTo(uploadFile);
+                File uploadFile = new File(uploadDir + rentalRequest.getPicture().getOriginalFilename());
+                rentalRequest.getPicture().transferTo(uploadFile);
                 String fileUrl = webConfig.getProtocol()+ "://"+
                         webConfig.getHostname()+":"+webConfig.getPort()+"/"+
                         webConfig.getUploadDir() +
-                        rentalDTORequestParam.getPicture().getOriginalFilename();
+                        rentalRequest.getPicture().getOriginalFilename();
                 String token =jwtUtil.extractTokenFromRequest(request);
 
                 rentalService.addRental(
                         new Rental(0,
-                                rentalDTORequestParam.getName(),
-                                rentalDTORequestParam.getSurface(),
-                                rentalDTORequestParam.getPrice(),
+                                rentalRequest.getName(),
+                                rentalRequest.getSurface(),
+                                rentalRequest.getPrice(),
                                 fileUrl,
-                                rentalDTORequestParam.getDescription(),
-                                LocalDate.now(),
-                                LocalDate.now(),
-                                userService.fetchUserByToken(token).getId()
+                                rentalRequest.getDescription(),
+                                LocalDateTime.now(),
+                                LocalDateTime.now(),
+                                userService.fetchUserByToken(token).get().getId()
                         )
                 );
 
@@ -154,14 +154,13 @@ public class RentalController {
                     content = @Content)
     })
     @PutMapping (value = "/rentals/{id}", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> updateRental(@RequestHeader("Authorization") String token,
-                                          @PathVariable Integer id,
-                                       @ModelAttribute RentalDTORequestParam rentalDTORequestParam
+    public ResponseEntity<?> updateRental(@PathVariable Integer id,
+                                       @ModelAttribute RentalRequest rentalRequest
     ) {
         try {
-            rentalDTORequestParam.setId(id);
+            rentalRequest.setId(id);
             rentalService.updateRental(
-                    rentalMapper.rentalDTORequestParamToRental(rentalDTORequestParam)
+                    rentalMapper.rentalDTORequestParamToRental(rentalRequest)
             );
 
             return ResponseEntity.ok(new RentalCreatedDTO(RENTAL_UPDATED_SUCCESSFULLY));

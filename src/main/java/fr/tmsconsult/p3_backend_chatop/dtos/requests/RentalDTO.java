@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class RentalDTO {
+
     private int id;
     private String name;
     private float surface;

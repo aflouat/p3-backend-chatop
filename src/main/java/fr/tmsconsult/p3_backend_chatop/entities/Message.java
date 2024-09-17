@@ -24,6 +24,9 @@ public class Message {
 
     private int userId;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
 
 

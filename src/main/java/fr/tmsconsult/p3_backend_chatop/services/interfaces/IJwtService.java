@@ -18,7 +18,6 @@ public interface IJwtService {
 
     Claims extractAllClaims(String token);
 
-    boolean hasTokenNotExpiredAndExistingUser(String token, UserDetails userDetails);
 
     boolean isTokenExpired(String token);
 
