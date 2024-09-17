@@ -1,17 +1,14 @@
 package fr.tmsconsult.p3_backend_chatop.dtos.Responses;
 
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-@Data
+@RequiredArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-public class AllRentalsDTO {
-    private List<RentalDTO> rentals;
-
+public class RentalResponseList {
+    private final List<RentalDTO> rentals;
 }

@@ -108,15 +108,20 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "Get the currently authenticated user", security = @SecurityRequirement(name = "Bearer Authentication"))
+    public ResponseEntity<?> loadConnectedUser(HttpServletRequest request) {
+        Optional<User> user;
+        try {
+            String token = jwtService.extractTokenFromRequest(request);
+             user = service.fetchUserByEmail(jwtService.extractEmail(token));
+            if (!user.isPresent()) {
+                new AuthenticationFailedException("User not found");
+            }
+        } catch (RuntimeException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new AuthenticationFailedException("Authentication failed"));
 
-    public UserResponse loadConnectedUser(HttpServletRequest request) {
-        String token = jwtService.extractTokenFromRequest(request);
-        Optional<User> user = service.fetchUserByEmail(jwtService.extractEmail(token));
-        if (!user.isPresent()) {
-            return new UserResponse();
-        } else {
-            return userMapper.userToUserDTO(user.get());
         }
-
+        return ResponseEntity.ok(user);
     }
 }

@@ -1,9 +1,10 @@
 package fr.tmsconsult.p3_backend_chatop.config;
 
 
-import fr.tmsconsult.p3_backend_chatop.services.impl.JwtServiceImpl;
 import fr.tmsconsult.p3_backend_chatop.services.impl.UserDetailsServiceImpl;
 import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,11 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -29,9 +28,9 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     public static final String LOGIN_PATH = "/api/auth/login";
     public static final String REGISTER_PATH = "/api/auth/register";
-    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     public static final String ERROR_BAD_CREDENTIALS = "Error: Bad credentials";
-    private final JwtServiceImpl jwtServiceImpl;
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+    private final IJwtService jwtServiceImpl;
     private final ApplicationContext context;
     private final IJwtService jwtService;
 
@@ -65,12 +64,20 @@ public class JwtFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 }
-            } catch (UsernameNotFoundException e) {
-                logger.error(e.getMessage());
-            } catch (BadCredentialsException ex) {
+            } catch (ExpiredJwtException e) {
+                logger.error("Token expired", e);
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write(ERROR_BAD_CREDENTIALS);
-                return;
+                response.getWriter().write("Token expired");
+            }catch (MalformedJwtException e) {
+            logger.error("Token malformed", e);
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token malformed");
+        }catch (Exception e) {
+                logger.error("Authentication error", e);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Authentication failed");
             }
 
         }

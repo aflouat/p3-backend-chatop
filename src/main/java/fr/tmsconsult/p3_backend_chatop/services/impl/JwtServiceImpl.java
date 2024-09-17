@@ -3,6 +3,7 @@ package fr.tmsconsult.p3_backend_chatop.services.impl;
 import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -59,16 +61,17 @@ public class JwtServiceImpl implements IJwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractEmail(String token) {
+    public String extractEmail(String token) throws MalformedJwtException{
         return extractClaim(token, Claims::getSubject);
     }
 
-    public  <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
+    public  <T> T extractClaim(String token, Function<Claims, T> claimResolver) throws MalformedJwtException {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
 
-    public Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) throws MalformedJwtException{
+
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
@@ -85,12 +88,15 @@ public class JwtServiceImpl implements IJwtService {
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-    public String extractTokenFromRequest(HttpServletRequest request) {
+    public String extractTokenFromRequest (HttpServletRequest request) throws MalformedJwtException  {
         String token = "";
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             token = authHeader.substring(7);
+        }
+        if (!StringUtils.hasText(token)){
+            throw new MalformedJwtException("Invalid JWT token");
         }
         return token;
     }

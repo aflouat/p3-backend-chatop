@@ -7,6 +7,7 @@ import fr.tmsconsult.p3_backend_chatop.mappers.MessageMapper;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
 import fr.tmsconsult.p3_backend_chatop.services.impl.MessageServiceImpl;
 import fr.tmsconsult.p3_backend_chatop.services.impl.UserDetailsServiceImpl;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -25,9 +27,8 @@ import java.time.LocalDateTime;
 public class MessageController {
     public static final String CANNOT_SEND_THE_MESSAGE_PLEASE_CHECK_AND_RETRY_AGAIN = "Cannot send the message! please check and retry again!";
     public static final String MESSAGE_SENT = "Message send with success";
-    private final MessageServiceImpl messageServiceImpl;
-    //TODO utiliser l'interface pour le MyUserDetailsServiceImpl
-    private final UserDetailsServiceImpl myUserDetailsServiceImpl;
+    private final IMessageService messageServiceImpl;
+
     private final MessageMapper messageMapper = MessageMapper.INSTANCE;
 
     @Operation(summary = "Send a message regarding the rental")

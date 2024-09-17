@@ -48,7 +48,6 @@ $env:DB_URL = "jdbc:mysql://localhost:3306/rental_db"
 $env:DB_USERNAME = "root"
 $env:DB_PASSWORD = "rootROOT@1"
 $env:JWT_SECRET = "REdBd2NtVmpTN0tyczl1YmE3WFY0NC9adXNLUHZDTHIzN2dDMFkyUkdYODFxVFp4NzA2SU5lbFI2ODdQc3YyKw=="
-Sous Linux/MacOS (ou en utilisant bash sous Windows) :
 
 ``` 
 
