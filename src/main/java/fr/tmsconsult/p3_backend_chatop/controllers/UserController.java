@@ -1,7 +1,7 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
 import org.springframework.security.core.AuthenticationException;
 
-import fr.tmsconsult.p3_backend_chatop.config.JwtUtil;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.UserResponse;
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.LoginRequest;
@@ -36,7 +36,7 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService service;
-    private final JwtUtil jwtUtil;
+    private final IJwtService jwtService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -109,8 +109,8 @@ public class UserController {
     @Operation(summary = "Get the currently authenticated user", security = @SecurityRequirement(name = "Bearer Authentication"))
 
     public UserResponse loadConnectedUser(HttpServletRequest request) {
-        String token = jwtUtil.extractTokenFromRequest(request);
-        Optional<User> user = service.fetchUserByEmail(token);
+        String token = jwtService.extractTokenFromRequest(request);
+        Optional<User> user = service.fetchUserByEmail(jwtService.extractEmail(token));
         if (!user.isPresent()) {
             return new UserResponse();
         } else {

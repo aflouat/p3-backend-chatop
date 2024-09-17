@@ -1,7 +1,6 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.tmsconsult.p3_backend_chatop.config.JwtUtil;
 import fr.tmsconsult.p3_backend_chatop.config.WebConfig;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.AllRentalsDTO;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.RentalCreatedDTO;
@@ -10,8 +9,10 @@ import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalRequest;
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
 import fr.tmsconsult.p3_backend_chatop.mappers.RentalMapper;
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
-import fr.tmsconsult.p3_backend_chatop.services.impl.RentalService;
-import fr.tmsconsult.p3_backend_chatop.services.impl.UserService;
+
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IRentalService;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,13 +40,13 @@ public class RentalController {
     public static final String CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN = "cannot submit rental, please check and try again";
     private static final String RENTAL_UPDATED_SUCCESSFULLY = "Rental updated successfully !"; ;
 
-    private final RentalService rentalService;
+    private final IRentalService rentalService;
     private final WebConfig webConfig;
-    private final UserService userService;
+    private final IUserService userService;
+    private final IJwtService jwtService;
 
 
     private final RentalMapper rentalMapper = RentalMapper.INSTANCE; // Accessing the mapper instance
-    private final JwtUtil jwtUtil;
 
 
     @Operation(summary = "get all rentals for a connected user")
@@ -122,7 +123,7 @@ public class RentalController {
                         webConfig.getHostname()+":"+webConfig.getPort()+"/"+
                         webConfig.getUploadDir() +
                         rentalRequest.getPicture().getOriginalFilename();
-                String token =jwtUtil.extractTokenFromRequest(request);
+                        String token =jwtService.extractTokenFromRequest(request);
 
                 rentalService.addRental(
                         new Rental(0,

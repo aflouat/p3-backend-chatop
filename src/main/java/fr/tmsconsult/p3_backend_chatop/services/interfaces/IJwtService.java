@@ -2,6 +2,7 @@ package fr.tmsconsult.p3_backend_chatop.services.interfaces;
 
 
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
@@ -24,4 +25,5 @@ public interface IJwtService {
     Date extractExpiration(String token);
 
     SecretKey getKey();
+     String extractTokenFromRequest(HttpServletRequest request);
 }

@@ -3,6 +3,7 @@ package fr.tmsconsult.p3_backend_chatop.config;
 
 import fr.tmsconsult.p3_backend_chatop.services.impl.JwtServiceImpl;
 import fr.tmsconsult.p3_backend_chatop.services.impl.UserDetailsServiceImpl;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     public static final String ERROR_BAD_CREDENTIALS = "Error: Bad credentials";
     private final JwtServiceImpl jwtServiceImpl;
     private final ApplicationContext context;
-    private final JwtUtil jwtUtil;
+    private final IJwtService jwtService;
 
     private static boolean shouldAuthenticate(String username) {
         return username != null && SecurityContextHolder.getContext().getAuthentication() == null;
@@ -47,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        String token = jwtUtil.extractTokenFromRequest(request);
+        String token = jwtService.extractTokenFromRequest(request);
         String email = null;
         if (StringUtils.hasText(token)) {
             email = jwtServiceImpl.extractEmail(token);
