@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
@@ -23,7 +24,8 @@ public class JwtServiceImpl implements IJwtService {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
     public static final String KEY_GEN_ALGORITHM = "HmacSHA256";
-    private String secretKey = "cedb81db8c25735d752de9a5d45e3dcafecdf1c3166ab5025ee36cb5176231b6";
+    @Value("${jwt.secret}")
+    private String secretKey ;
 //TODO check si faux token sur la signature ##amelioration
     public JwtServiceImpl() {
 
