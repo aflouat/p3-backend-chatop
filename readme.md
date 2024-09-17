@@ -44,8 +44,17 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
         sous windows : 
     ```bash
    ./mvnw clean install
-3. démarrer le backend avec votre meilleur IDE, lancer un build et démarrer
- le projet spring boot
+``
+   3. définir vos variables d'environnement pour fournir la config de sécurité propre à votre installation. si vous êtes 
+   sur windows, utilisez power shell 
+```bash
+   $env:DB_URL = "jdbc:mysql://localhost:3306/rental_db"
+   $env:DB_USERNAME = "root"
+   $env:DB_PASSWORD = "rootROOT@1"
+   $env:JWT_SECRET = "REdBd2NtVmpTN0tyczl1YmE3WFY0NC9adXNLUHZDTHIzN2dDMFkyUkdYODFxVFp4NzA2SU5lbFI2ODdQc3YyKw=="
+   
+
+4. 
 4. cloner le frontend angular a partir de github:
    ```bash 
    https://github.com/aflouat/P3-frontend-chatop
