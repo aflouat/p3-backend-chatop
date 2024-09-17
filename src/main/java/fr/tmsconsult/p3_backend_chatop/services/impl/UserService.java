@@ -39,7 +39,7 @@ public class UserService implements IUserService {
     public String generateToken(String email) {
         return jwtServiceImpl.generateToken(email);
     }
-
+    @Override
     public String verifyEmailAndPassword(User user)  throws AuthenticationException {
         logger.info("Verifying email and password");
         authManager.authenticate(

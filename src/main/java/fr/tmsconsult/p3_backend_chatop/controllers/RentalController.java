@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -38,7 +40,7 @@ public class RentalController {
     private static final Logger logger = LoggerFactory.getLogger(RentalController.class);
     public static final String RENTAL_CREATED = "Rental created !";
     public static final String CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN = "cannot submit rental, please check and try again";
-    private static final String RENTAL_UPDATED_SUCCESSFULLY = "Rental updated successfully !"; ;
+    private static final String RENTAL_UPDATED_SUCCESSFULLY = "Rental updated !"; ;
 
     private final IRentalService rentalService;
     private final WebConfig webConfig;
@@ -167,7 +169,7 @@ public class RentalController {
             return ResponseEntity.ok(new RentalCreatedDTO(RENTAL_UPDATED_SUCCESSFULLY));
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResponseEntity.status(400).body(CANNOT_SUBMIT_RENTAL_PLEASE_CHECK_AND_TRY_AGAIN);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.emptyMap());
         }
     }
 

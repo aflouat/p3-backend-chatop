@@ -1,5 +1,6 @@
 package fr.tmsconsult.p3_backend_chatop.controllers;
 import fr.tmsconsult.p3_backend_chatop.services.interfaces.IJwtService;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IUserService;
 import org.springframework.security.core.AuthenticationException;
 
 import fr.tmsconsult.p3_backend_chatop.dtos.Responses.JwtResponse;
@@ -35,7 +36,7 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class UserController {
 
-    private final UserService service;
+    private final IUserService service;
     private final IJwtService jwtService;
     private final UserMapper userMapper = UserMapper.INSTANCE;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);

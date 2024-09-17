@@ -13,5 +13,5 @@ public interface IUserService {
     Optional<User> fetchUserByToken(String token);
 
     Optional<User> fetchUserByEmail(String email);
-
+    String generateToken(String email);
 }

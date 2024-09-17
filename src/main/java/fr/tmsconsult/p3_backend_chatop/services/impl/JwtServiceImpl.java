@@ -27,7 +27,6 @@ public class JwtServiceImpl implements IJwtService {
     public static final String KEY_GEN_ALGORITHM = "HmacSHA256";
     @Value("${jwt.secret}")
     private String secretKey ;
-//TODO check si faux token sur la signature ##amelioration
     public JwtServiceImpl() {
 
         try {
@@ -38,7 +37,7 @@ public class JwtServiceImpl implements IJwtService {
             throw new RuntimeException(e);
         }
     }
-
+    @Override
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         String token  = Jwts.builder()
