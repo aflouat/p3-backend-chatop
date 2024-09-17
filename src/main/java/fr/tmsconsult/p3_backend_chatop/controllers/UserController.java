@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "Get the currently authenticated user", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get the currently authenticated user", security = @SecurityRequirement(name = "Bearer Authentication"))
 
     public UserResponse loadConnectedUser(HttpServletRequest request) {
         String token = jwtUtil.extractTokenFromRequest(request);

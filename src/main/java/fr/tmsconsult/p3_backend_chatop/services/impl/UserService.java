@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
 
-    public static  String FAILD_USER_AUTHENTICATION = "faild user authentication";
     private final JwtServiceImpl jwtServiceImpl;
     private final AuthenticationManager authManager;
     private final UserRepo repo;
@@ -53,7 +51,6 @@ public class UserService implements IUserService {
 
     public Optional<User> fetchUserByToken(String token) {
         String email = jwtServiceImpl.extractEmail(token);
-        Optional<User> user = repo.findByEmail(email);
-        return  user;
+        return repo.findByEmail(email);
     }
 }
