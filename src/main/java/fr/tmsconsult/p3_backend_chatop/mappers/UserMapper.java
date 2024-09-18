@@ -1,6 +1,6 @@
 package fr.tmsconsult.p3_backend_chatop.mappers;
 
-import fr.tmsconsult.p3_backend_chatop.dtos.Responses.UserDTO;
+import fr.tmsconsult.p3_backend_chatop.dtos.Responses.UserResponse;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,8 +21,7 @@ public interface UserMapper {
     // Assuming createdAt and updatedAt are available in User entity or will be manually set in DTO
     @Mapping(source = "createdAt", target = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(source = "updatedAt", target = "updatedAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
-
-    UserDTO userToUserDTO(User user);
+    UserResponse userToUserDTO(User user);
 
     // Reverse mapping
     @Mapping(source = "id", target = "id")
@@ -32,7 +31,7 @@ public interface UserMapper {
     @Mapping(source = "createdAt", target = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(source = "updatedAt", target = "updatedAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
 
-    User userDTOToUser(UserDTO userDTO);
+    User userDTOToUser(UserResponse userResponse);
     default String map(LocalDateTime dateTime) {
         return dateTime != null ? dateTime.format(DATE_FORMATTER) : null;
     }

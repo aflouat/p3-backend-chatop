@@ -2,13 +2,12 @@ package fr.tmsconsult.p3_backend_chatop.mappers;
 
 
 import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTO;
-import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalDTORequestParam;
+import fr.tmsconsult.p3_backend_chatop.dtos.requests.RentalRequest;
 import fr.tmsconsult.p3_backend_chatop.entities.Rental;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
 @Mapper
 public interface RentalMapper {
     RentalMapper INSTANCE = Mappers.getMapper(RentalMapper.class);
@@ -18,7 +17,7 @@ public interface RentalMapper {
     RentalDTO rentalToRentalDTO(Rental rental);
 
     @Mapping(target = "picture", ignore = true) // Since you're handling file upload separately
-    Rental rentalDTORequestParamToRental(RentalDTORequestParam rentalDTORequestParam);
+    Rental rentalDTORequestParamToRental(RentalRequest rentalRequest);
 
 
 }

@@ -1,47 +1,56 @@
 package fr.tmsconsult.p3_backend_chatop.services.impl;
 
-import fr.tmsconsult.p3_backend_chatop.dtos.Responses.UserDTO;
 import fr.tmsconsult.p3_backend_chatop.entities.User;
-import fr.tmsconsult.p3_backend_chatop.mappers.UserMapper;
 import fr.tmsconsult.p3_backend_chatop.repositories.UserRepo;
+import fr.tmsconsult.p3_backend_chatop.services.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements IUserService {
+
 
     private final JwtServiceImpl jwtServiceImpl;
     private final AuthenticationManager authManager;
     private final UserRepo repo;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+
+    @Override
+    public Optional<User> fetchUserByEmail(String email) {
+        return repo.findByEmail(email);
+    }
 
     public User register(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
-        repo.save(user);
-        return user;
+        return repo.save(user);
+
+    }
+    public String generateToken(String email) {
+        return jwtServiceImpl.generateToken(email);
+    }
+    @Override
+    public String verifyEmailAndPassword(User user)  throws AuthenticationException {
+        logger.info("Verifying email and password");
+        authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            logger.info("Successful Authentication!");
+            return generateToken(user.getEmail());
+
     }
 
-    public String verify(User user) {
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return jwtServiceImpl.generateToken(user.getEmail());
-        } else {
-            return "fail";
-        }
-    }
-    public UserDTO fetchUserDTOByToken(String token) {
+    public Optional<User> fetchUserByToken(String token) {
         String email = jwtServiceImpl.extractEmail(token);
-        User user = repo.findByEmail(email);
-        return  UserMapper.INSTANCE.userToUserDTO(user);
-    }
-    public User fetchUserByToken(String token) {
-        String email = jwtServiceImpl.extractEmail(token);
-        User user = repo.findByEmail(email);
-        return  user;
+        return repo.findByEmail(email);
     }
 }

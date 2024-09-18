@@ -9,7 +9,7 @@ import lombok.Getter;
 @Data
 @AllArgsConstructor
 @Getter
-public class MessageDTO {
+public class MessageRequest {
 
     private String message;
     @JsonProperty("user_id")

@@ -1,61 +1,130 @@
 # P3 Backend Chatop
-
-Ce projet est le backend pour un portail de mise en relation entre les futurs locataires et les propriétaires pour la location saisonnière, initialement sur la côte basque et éventuellement sur toute la France.
+Ce projet représente le backend pour une plateforme de mise en relation entre futurs locataires et propriétaires pour des locations saisonnières, initialement sur la côte basque, avec une expansion prévue à toute la France.
 
 ## Table des matières
-
-- [Fonctionnalités](#fonctionnalités)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Démarrage du Serveur](#démarrage-du-serveur)
-- [Utilisation](#utilisation)
-- [Test avec Postman](#test-avec-postman)
-- [Documentation de l'API](#documentation-de-lapi)
-- [Contribution](#contribution)
-
-## Fonctionnalités
-
-- Enregistrement & connexion des utilisateurs (authentification avec JWT)
-- Listing, Création et mise à jour des annonces de location. 
-- Consultation du détail d'une annonce
-- Intégration avec une application front-end Angular
-- Documentation des API avec Swagger
-
+### Fonctionnalités
+Prérequis
+Démarrage rapide
+Installation de l'environnement de développement
+Documentation de l'API
+Test avec Swagger
+Contribution
+Fonctionnalités
+Enregistrement et connexion des utilisateurs (authentification via JWT)
+Création, mise à jour et listing des annonces de location
+Consultation du détail d'une annonce
+Documentation de l'API avec Swagger
+Intégration avec un frontend Angular
 ## Prérequis
-
 Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
 
-- [Java 17 ou supérieur](https://adoptium.net/)
-- [Maven](https://maven.apache.org/)
-- [MySQL](https://dev.mysql.com/downloads/mysql/)
-- [Git](https://git-scm.com/)
-- [Postman](https://www.postman.com/) (pour tester l'API)
+Java 17 ou supérieur
+Maven
+MySQL
+Git
+Postman (pour tester l'API)
+## Démarrage rapide
+1. Cloner le projet
+   Clonez le repository GitHub sur votre machine locale :
 
-## quik start dev
+``` bash
+git clone https://github.com/aflouat/p3-backend-chatop.git
+cd p3-backend-chatop
+``` 
+2. Installer les dépendances Maven
+   Exécutez la commande Maven pour télécharger les dépendances :
 
-1. Clonez le repository GitHub sur votre machine locale :
+Sous Windows :
+``` bash
+./mvnw clean install
+``` 
+3. Définir les variables d'environnement
+   Pour configurer la base de données et les secrets JWT, définissez les variables d'environnement.
 
-   ```bash
-   git clone https://github.com/aflouat/p3-backend-chatop.git
-   cd p3-backend-chatop
+Sous PowerShell (Windows) :
 
-2. exécuter la commande maven pour téléchrger les dépencdances. :
-        sous windows : 
-    ```bash
-   ./mvnw clean install
-3. démarrer le backend avec votre meilleur IDE, lancer un build et démarrer
- le projet spring boot
-4. cloner le frontend angular a partir de github:
-   ```bash 
-   https://github.com/aflouat/P3-frontend-chatop
-   
-5. démarrer le frontend angular avec :
- ```bash 
-   cd P3-frontend-chatop
-   ./ng serve
+``` bash
+$env:DB_URL = "jdbc:mysql://localhost:3306/rental_db"
+$env:DB_USERNAME = "root"
+$env:DB_PASSWORD = "rootROOT@1"
+$env:JWT_SECRET = "REdBd2NtVmpTN0tyczl1YmE3WFY0NC9adXNLUHZDTHIzN2dDMFkyUkdYODFxVFp4NzA2SU5lbFI2ODdQc3YyKw=="
 
+``` 
+
+4. Créer la base de données
+   Créez la base de données MySQL et les tables nécessaires en exécutant les commandes SQL suivantes :
+
+``` sql
+CREATE DATABASE IF NOT EXISTS `rental_db`;
+USE `rental_db`;
+
+CREATE TABLE `users` (
+`id` int NOT NULL AUTO_INCREMENT,
+`email` varchar(255) DEFAULT NULL,
+`name` varchar(255) DEFAULT NULL,
+`password` varchar(255) DEFAULT NULL,
+`created_at` datetime(6) DEFAULT NULL,
+`updated_at` datetime(6) DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `rentals` (
+`id` int NOT NULL AUTO_INCREMENT,
+`created_at` datetime(6) DEFAULT NULL,
+`description` varchar(1000) DEFAULT NULL,
+`name` varchar(255) DEFAULT NULL,
+`owner_id` int NOT NULL,
+`picture` varchar(255) DEFAULT NULL,
+`price` float NOT NULL,
+`surface` float NOT NULL,
+`updated_at` datetime(6) DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `messages` (
+`id` int NOT NULL AUTO_INCREMENT,
+`created_at` datetime(6) DEFAULT NULL,
+`message` varchar(255) DEFAULT NULL,
+`rental_id` int NOT NULL,
+`updated_at` datetime(6) DEFAULT NULL,
+`user_id` int NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+``` 
+5. Démarrer le backend
+   Lancez votre projet Spring Boot avec Maven :
+
+``` bash
+./mvn spring-boot:run
+``` 
+Le backend sera accessible sur http://localhost:3001.
+
+Installation de l'environnement de développement
+1. Cloner le frontend Angular
+   Clonez le repository GitHub du frontend Angular :
+
+``` bash
+git clone https://github.com/aflouat/P3-frontend-chatop
+cd P3-frontend-chatop
 ```
-6. accéder au swagger pour tester les endpoints :
-```bash
+2. Installer les dépendances du frontend
+   Installez les dépendances du projet Angular :
+
+``` bash
+npm install
+3. Démarrer le frontend Angular
+   Lancez le frontend Angular :
+```
+``` bash
+ng serve
+Le frontend sera accessible sur http://localhost:4200.
+```
+Test avec Swagger
+Pour tester les endpoints protégés via Swagger, accédez à la documentation Swagger :
+
+``` bash
+
 http://localhost:3001/swagger-ui/index.html
+```
+## Contribution
+Les contributions sont les bienvenues. Veuillez soumettre un pull request pour toute amélioration ou nouvelle fonctionnalité.

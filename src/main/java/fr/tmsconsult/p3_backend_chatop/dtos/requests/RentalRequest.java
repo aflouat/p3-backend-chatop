@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RentalDTORequestParam {
+public class RentalRequest {
     private int id;
     private String name;
     private float surface;

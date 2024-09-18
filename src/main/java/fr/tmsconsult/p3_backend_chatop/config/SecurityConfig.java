@@ -1,13 +1,11 @@
 package fr.tmsconsult.p3_backend_chatop.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,24 +26,25 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
 
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("http://localhost:4200"));
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Autoriser OPTIONS si nécessaire
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
-                    config.setAllowCredentials(true);  // Permettre l'envoi des cookies si nécessaire
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+
                     return config;
                 }))
 
                 .csrf(customizer -> customizer.disable()).
 
+
                 authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/login", "/api/auth/register","/swagger-ui/**",
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/swagger-ui/**",
                                 "/v3/api-docs/**", "/uploads/**").permitAll()
                         .anyRequest().authenticated()).
                 sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
